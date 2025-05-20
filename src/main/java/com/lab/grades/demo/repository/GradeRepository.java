@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long> {
-    List<Grade> findByCourseCode(String courseCode);
+    // Cambiar este método para usar la propiedad correcta
+    List<Grade> findByCourseCourseCode(String courseCode);
 }

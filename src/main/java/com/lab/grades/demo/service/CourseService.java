@@ -26,7 +26,9 @@ public class CourseService {
     }
 
     public List<CourseGrade> getGradesByCourseCode(String courseCode) {
-        List<Grade> grades = gradeRepository.findByCourseCode(courseCode);
+        // Usa el método actualizado de GradeRepository
+        List<Grade> grades = gradeRepository.findByCourseCourseCode(courseCode);
+        // o si usaste la opción 2: List<Grade> grades = gradeRepository.findByCourseCode(courseCode);
 
         return grades.stream()
                 .map(grade -> new CourseGrade(
