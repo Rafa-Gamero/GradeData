@@ -1,6 +1,6 @@
 package com.lab.grades.demo.service;
 
-import com.lab.grades.demo.dto.CourseGrade;
+import com.lab.grades.demo.dto.CourseGradeDTO;
 import com.lab.grades.demo.model.Course;
 import com.lab.grades.demo.model.Grade;
 import com.lab.grades.demo.repository.CourseRepository;
@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -21,22 +19,22 @@ public class CourseService {
     @Autowired
     private GradeRepository gradeRepository;
 
-    public Optional<Course> getCourseByCode(String courseCode) {
-        return courseRepository.findById(courseCode);
+    // Corregido: courseCode es String, no Long
+    public Course getCourseByCode(String courseCode) {
+        return courseRepository.findById(courseCode).orElse(null);
     }
 
-    public List<CourseGrade> getGradesByCourseCode(String courseCode) {
-        // Usa el método actualizado de GradeRepository
-        List<Grade> grades = gradeRepository.findByCourseCourseCode(courseCode);
-        // o si usaste la opción 2: List<Grade> grades = gradeRepository.findByCourseCode(courseCode);
+    // Corregido: courseCode es String, no Long
+    public CourseGradeDTO getCourseGrade(String courseCode) {
+        Course course = getCourseByCode(courseCode);
+        if (course == null){
+            return null;
+        }
+        // Buscar calificaciones por el curso
+        List<Grade> grades = gradeRepository.findByCourse(course);
+        // O alternativamente, si quieres usar courseCode directamente:
+        // List<Grade> grades = gradeRepository.findByCourse_CourseCode(courseCode);
 
-        return grades.stream()
-                .map(grade -> new CourseGrade(
-                        grade.getCourse().getCourseCode(),
-                        grade.getCourse().getCourseName(),
-                        grade.getStudentId(),
-                        grade.getGrade()
-                ))
-                .collect(Collectors.toList());
+        return new CourseGradeDTO(course.getCourseName(), grades);
     }
 }
